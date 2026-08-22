@@ -1,0 +1,25 @@
+{
+  "name": "routedrift",
+  "version": "0.0.1",
+  "description": "Detects API contract drift between frontend call sites and backend route definitions",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "vitest",
+    "build": "tsc",
+    "check": "tsc --noEmit"
+  },
+  "keywords": ["static-analysis", "api", "typescript", "nextjs", "express", "linter"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ts-morph": "^28.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  }
+}
