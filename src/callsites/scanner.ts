@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { resolveUrl } from './resolver.js'
 import { Project, SyntaxKind, Node } from 'ts-morph'
 import type { CallSite, HttpMethod } from '../types.js'
 
@@ -35,9 +36,7 @@ export function scanCallSites(dir: string): CallSite[] {
       const first = call.getArguments()[0]
       if (!first) continue
 
-      const pattern = Node.isStringLiteral(first)
-        ? first.getLiteralValue()
-        : null
+            const pattern = resolveUrl(first)
 
       sites.push({
         method: readMethod(call),

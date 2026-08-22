@@ -22,5 +22,5 @@ test('finds three fetch calls in the fixture', () => {
   const posts = sites.find(s => s.pattern === '/api/posts')
   expect(posts?.method).toBe('POST')
 
-  expect(sites.filter(s => s.pattern === null)).toHaveLength(2)
+  expect(sites.filter(s => s.pattern === null)).toHaveLength(0)
 })
