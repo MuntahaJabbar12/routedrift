@@ -12,15 +12,27 @@ export function patternsMatch(routePattern: string, callPattern: string): boolea
   return route.every((seg, i) => seg.startsWith(':') || seg === call[i])
 }
 
-export function match(routes: Route[], calls: CallSite[]): Finding[] {
+export type MatchResult = {
+  findings: Finding[]
+  coverage: {
+    totalCalls: number
+    resolvedCalls: number
+    percent: number
+  }
+}
+
+export function match(routes: Route[], calls: CallSite[]): MatchResult {
   const findings: Finding[] = []
   const usedRoutes = new Set<Route>()
+  let resolvedCalls = 0
 
   for (const call of calls) {
     if (call.pattern === null) {
       findings.push({ kind: 'unresolved', call })
       continue
     }
+
+    resolvedCalls++
 
     const hit = routes.find(
       r => r.method === call.method && patternsMatch(r.pattern, call.pattern!)
@@ -34,5 +46,8 @@ export function match(routes: Route[], calls: CallSite[]): Finding[] {
     if (!usedRoutes.has(route)) findings.push({ kind: 'dead', route })
   }
 
-  return findings
+  const totalCalls = calls.length
+  const percent = totalCalls === 0 ? 100 : Math.round((resolvedCalls / totalCalls) * 100)
+
+  return { findings, coverage: { totalCalls, resolvedCalls, percent } }
 }
