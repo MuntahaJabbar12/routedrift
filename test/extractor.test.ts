@@ -15,11 +15,11 @@ test('extracts four routes from the fixture', () => {
   expect(users.map(r => r.method).sort()).toEqual(['DELETE', 'GET'])
 })
 
-test('finds three fetch calls in the fixture', () => {
+test('finds five call sites in the fixture', () => {
   const sites = scanCallSites('test/fixtures/demo-app')
-  expect(sites).toHaveLength(3)
+  expect(sites).toHaveLength(5)
 
-  const posts = sites.find(s => s.pattern === '/api/posts')
+  const posts = sites.find(s => s.pattern === '/api/posts' && s.method === 'POST')
   expect(posts?.method).toBe('POST')
 
   expect(sites.filter(s => s.pattern === null)).toHaveLength(0)

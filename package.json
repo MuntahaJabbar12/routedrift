@@ -1,18 +1,60 @@
 {
   "name": "routedrift",
-  "version": "0.0.1",
-  "description": "Detects API contract drift between frontend call sites and backend route definitions",
+  "version": "0.1.0",
+  "description": "Static analysis CLI that finds API contract drift between frontend fetch/axios call sites and backend route definitions",
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "routedrift": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "action",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.18"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "dev": "vitest",
-    "build": "tsc",
-    "check": "tsc --noEmit"
+    "demo": "tsx src/cli.ts test/fixtures/demo-app --color",
+    "audit": "node scripts/audit.mjs",
+    "prepublishOnly": "npm run check && npm run test && npm run build"
   },
-  "keywords": ["static-analysis", "api", "typescript", "nextjs", "express", "linter"],
+  "keywords": [
+    "static-analysis",
+    "api",
+    "contract-testing",
+    "typescript",
+    "nextjs",
+    "fetch",
+    "axios",
+    "linter",
+    "dead-code",
+    "ts-morph"
+  ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/routedrift.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OWNER/routedrift/issues"
+  },
+  "homepage": "https://github.com/OWNER/routedrift#readme",
   "dependencies": {
     "ts-morph": "^28.0.0"
   },
