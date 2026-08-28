@@ -45,16 +45,16 @@
     "dead-code",
     "ts-morph"
   ],
-  "author": "",
+  "author": "Muntaha Jabbar",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/routedrift.git"
+    "url": "https://github.com/MuntahaJabbar12/routedrift.git"
   },
+  "homepage": "https://github.com/MuntahaJabbar12/routedrift#readme",
   "bugs": {
-    "url": "https://github.com/OWNER/routedrift/issues"
+    "url": "https://github.com/MuntahaJabbar12/routedrift/issues"
   },
-  "homepage": "https://github.com/OWNER/routedrift#readme",
   "dependencies": {
     "ts-morph": "^28.0.0"
   },
