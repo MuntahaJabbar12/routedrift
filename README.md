@@ -133,7 +133,29 @@ Both `fetch` and `axios` are recognized — including `axios.get(url)`-style cal
 
 - **Next.js** App Router (`app/**/route.ts`)
 
-Express is deliberately not supported yet. Its routes are registered by function calls and mounted under prefixes (`app.use('/api', router)`), which needs a real mount-tree resolver rather than reading file paths — a bigger job than the file-path case, and one that doesn't touch the resolver, matcher, or reporters when it lands. Contributions welcome.
+Express is deliberately not supported yet. Its routes are registered by function calls and mounted under prefixes (`app.use('/api', router)`), which needs a real mount-tree resolver rather than reading file paths — a bigger job than the file-path case, and one that doesn't touch the resolver, matcher, or reporters when it lands.
+
+## Tested against real repositories
+
+Fixtures prove the tool is correct on cases it was built for. They don't prove much about real code. So I ran it against three open-source repos and checked every "broken" finding by hand before trusting it.
+
+| Repo | Routes | Calls | Broken | Dead | Unresolved | Coverage |
+|---|---|---|---|---|---|---|
+| [vercel/commerce](https://github.com/vercel/commerce) | 1 | 1 | 0 | 1 | 0 | — |
+| [dub](https://github.com/dubinc/dub) (`apps/web`) | 646 | 238 | 0 | 488 | 76 | 68% |
+| [papermark](https://github.com/papermark/papermark) | 476 | 378 | 29 | 78 | 78 | 79% |
+
+**vercel/commerce** mostly calls Shopify's external API rather than its own routes — too small a surface to be a fair test, included for completeness.
+
+**dub** is API-first: most of its 488 "dead" routes are public API endpoints meant to be called by external developers, not by dub's own frontend. Zero broken calls, which is itself a useful data point — it means the tool doesn't produce false positives at scale on a 646-route production codebase.
+
+**papermark** is where this got interesting. 29 broken-call findings, and I didn't take the number at face value — I traced every one back to source before believing it:
+
+- **~23** are billing/enterprise routes with no matching open-source route file. Checked whether the calling components are even reachable — some are dead code with zero importers, others are live. Papermark is open-core; billing very plausibly lives in a private hosted backend. Not bugs — this is exactly what `ignoreRoutes` in the config exists for.
+- **2** are a real tool limitation, not a papermark bug: a `.pdf` fetched from `/public` gets treated as a call site. Static assets aren't calls. Noted as a known gap, not filtered yet.
+- **1 is a real, filed bug**: [the "Revalidate cache" button](https://github.com/papermark/papermark/issues/2201) calls `POST /api/links/:id/revalidate`, which has never existed as a route — the actual endpoint is `GET /api/revalidate`, secured by a server-side secret the button can't supply. Confirmed via git blame the bug was introduced six days before I found it, and confirmed the button is wired to a real, clickable `onClick`, not dead code. Issue filed and open with maintainers.
+
+That last one is the actual point of building this: a fixture can't surprise you. A 9,000-star production repo can, and did.
 
 ## Why this exists
 
